@@ -302,18 +302,22 @@ class TestMaster:
         """Test exception demand scan."""
         self.run_master("e")
 
+    @pytest.mark.known_crash
     def test_send_SelectAndOperate_single_command(self, run_outstation):
         """Test send CROB select and operate single command."""
         self.run_master("c1")
 
+    @pytest.mark.known_crash
     def test_send_SelectAndOperate_command_set(self, run_outstation):
         """Test send CROB select and operate command set."""
         self.run_master("c2")
 
+    @pytest.mark.known_crash
     def test_send_DirectOperate_single_command(self, run_outstation):
         """Test send CROB direct operate single command."""
         self.run_master("d1")
 
+    @pytest.mark.known_crash
     def test_send_DirectOperate_command_set(self, run_outstation):
         """Test send CROB direct operate command set."""
         self.run_master("d2")

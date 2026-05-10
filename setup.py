@@ -1,3 +1,8 @@
+"""
+Legacy setup.py retained for backward compatibility.
+The canonical build configuration is in pyproject.toml.
+Use `pip install .` for building (which uses pyproject.toml automatically).
+"""
 import sys
 import os
 import subprocess
@@ -7,7 +12,7 @@ import platform
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
 from distutils.version import LooseVersion
-__version__ = '0.1.0'
+__version__ = '0.2.0'
 
 
 class CMakeExtension(Extension):
@@ -71,7 +76,7 @@ setup(
     version=__version__,
     author='Anh Nguyen',
     author_email='anh@kisensum.com',
-    url='http://github.com/Kisensum/pydnp3',
+    url='https://github.com/ChargePoint/pydnp3',
     description='pydnp3 -- python binding for opendnp3',
     long_description='',
     install_requires=['pybind11>=2.2'],
