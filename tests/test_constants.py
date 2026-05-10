@@ -15,14 +15,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Neither Kisensum, nor any of its employees, nor any jurisdiction or 
-# organization that has cooperated in the development of these materials, 
-# makes any warranty, express or implied, or assumes any legal liability 
-# or responsibility for the accuracy, completeness, or usefulness or any 
-# information, apparatus, product, software, or process disclosed, or 
-# represents that its use would not infringe privately owned rights. 
-# Reference herein to any specific commercial product, process, or service 
-# by trade name, trademark, manufacturer, or otherwise does not necessarily 
+# Neither Kisensum, nor any of its employees, nor any jurisdiction or
+# organization that has cooperated in the development of these materials,
+# makes any warranty, express or implied, or assumes any legal liability
+# or responsibility for the accuracy, completeness, or usefulness or any
+# information, apparatus, product, software, or process disclosed, or
+# represents that its use would not infringe privately owned rights.
+# Reference herein to any specific commercial product, process, or service
+# by trade name, trademark, manufacturer, or otherwise does not necessarily
 # constitute or imply its endorsement, recommendation, or favoring by Kisensum.
 # }}}
 
@@ -30,9 +30,9 @@ from pydnp3 import opendnp3 as opendnp3
 from pydnp3 import openpal as openpal
 
 
-class TestConstants():
+class TestConstants:
     """
-        Test some constants from pydnp3 and confirm their values.
+    Test some constants from pydnp3 and confirm their values.
     """
 
     def test_const(self):

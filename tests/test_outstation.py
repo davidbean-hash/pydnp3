@@ -26,11 +26,10 @@
 # constitute or imply its endorsement, recommendation, or favoring by Kisensum.
 # }}}
 
-from pydnp3 import asiodnp3, asiopal, opendnp3, openpal
-
 import time
-import pytest
 
+import pytest
+from pydnp3 import asiodnp3, asiopal, opendnp3, openpal
 
 FILTERS = opendnp3.levels.NORMAL | opendnp3.levels.ALL_COMMS
 HOST = "127.0.0.1"
@@ -40,7 +39,7 @@ PORT = 20000
 
 class OutstationApplication(opendnp3.IOutstationApplication):
     """
-        Interface for all outstation application callback info except for control requests.
+    Interface for all outstation application callback info except for control requests.
     """
 
     def __init__(self):
@@ -49,14 +48,14 @@ class OutstationApplication(opendnp3.IOutstationApplication):
 
     def OnStateChange(self, value):
         """
-            Called when a the reset/unreset status of the link layer changes.
+        Called when a the reset/unreset status of the link layer changes.
         """
         self.link_status = value
 
 
 class ChannelListener(asiodnp3.IChannelListener):
     """
-        Callback interface for receiving information about a running channel.
+    Callback interface for receiving information about a running channel.
     """
 
     def __init__(self):
@@ -65,14 +64,14 @@ class ChannelListener(asiodnp3.IChannelListener):
 
     def OnStateChange(self, state):
         """
-            State change notification.
+        State change notification.
         """
         self.state = state
 
 
 class LogHandler(openpal.ILogHandler):
     """
-        Callback interface for log messages.
+    Callback interface for log messages.
     """
 
     def __init__(self):
@@ -81,7 +80,7 @@ class LogHandler(openpal.ILogHandler):
 
     def Log(self, entry):
         """
-            Log information.
+        Log information.
         """
         if entry.loggerid == "server":
             self.server = True
@@ -93,13 +92,9 @@ def run_master():
     manager = asiodnp3.DNP3Manager(1, asiodnp3.ConsoleLogger().Create())
 
     # Connect via a TCPClient socket to an outstation
-    channel = manager.AddTCPClient("tcpclient",
-                                   FILTERS,
-                                   asiopal.ChannelRetry(),
-                                   HOST,
-                                   LOCAL,
-                                   PORT,
-                                   asiodnp3.PrintingChannelListener().Create())
+    channel = manager.AddTCPClient(
+        "tcpclient", FILTERS, asiopal.ChannelRetry(), HOST, LOCAL, PORT, asiodnp3.PrintingChannelListener().Create()
+    )
 
     # Master config object for a master
     stack_config = asiodnp3.MasterStackConfig()
@@ -107,10 +102,9 @@ def run_master():
     stack_config.link.RemoteAddr = 10
 
     # Add a master to a communication channel
-    master = channel.AddMaster("master",
-                               asiodnp3.PrintingSOEHandler().Create(),
-                               asiodnp3.DefaultMasterApplication().Create(),
-                               stack_config)
+    master = channel.AddMaster(
+        "master", asiodnp3.PrintingSOEHandler().Create(), asiodnp3.DefaultMasterApplication().Create(), stack_config
+    )
 
     # Enable the master. This will start communications.
     master.Enable()
@@ -119,7 +113,6 @@ def run_master():
 
 
 class TestOutstation:
-
     def run_outstation(self, value=None, index=0):
         # Callback interface for log messages
         self.handler = LogHandler()
@@ -129,12 +122,9 @@ class TestOutstation:
 
         # Connect via a TCPServer socket to a server
         self.channel_listener = ChannelListener()
-        channel = self.manager.AddTCPServer("server",
-                                            FILTERS,
-                                            asiopal.ChannelRetry().Default(),
-                                            LOCAL,
-                                            PORT,
-                                            self.channel_listener)
+        channel = self.manager.AddTCPServer(
+            "server", FILTERS, asiopal.ChannelRetry().Default(), LOCAL, PORT, self.channel_listener
+        )
 
         # A composite configuration struct that contains all the config information for a dnp3 outstation stack
         config = asiodnp3.OutstationStackConfig(opendnp3.DatabaseSizes.AllTypes(10))
@@ -145,10 +135,9 @@ class TestOutstation:
 
         # Add an outstation to a communication channel
         self.outstation_application = OutstationApplication()
-        outstation = channel.AddOutstation("outstation",
-                                           opendnp3.SuccessCommandHandler().Create(),
-                                           self.outstation_application,
-                                           config)
+        outstation = channel.AddOutstation(
+            "outstation", opendnp3.SuccessCommandHandler().Create(), self.outstation_application, config
+        )
         outstation.Enable()
 
         # If the master is running, the channel listener state is OPENING
@@ -187,4 +176,3 @@ class TestOutstation:
 
     def test_send_double_bit_binary(self, run_master):
         self.run_outstation(value=opendnp3.DoubleBitBinary(opendnp3.DoubleBit.DETERMINED_ON))
-

@@ -1,0 +1,71 @@
+[build-system]
+requires = ["scikit-build-core>=0.5", "pybind11>=2.11,<3"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "pydnp3"
+version = "0.2.0"
+description = "Python bindings for the opendnp3 library"
+readme = "README.md"
+license = {text = "Apache-2.0"}
+requires-python = ">=3.8"
+authors = [
+    {name = "ChargePoint", email = "opensource@chargepoint.com"},
+    {name = "Anh Nguyen", email = "anh@kisensum.com"},
+]
+maintainers = [
+    {name = "ChargePoint", email = "opensource@chargepoint.com"},
+]
+keywords = ["dnp3", "scada", "opendnp3", "industrial", "protocol", "bindings"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS",
+    "Programming Language :: C++",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering",
+    "Topic :: System :: Networking",
+]
+
+[project.urls]
+Homepage = "https://github.com/ChargePoint/pydnp3"
+Repository = "https://github.com/ChargePoint/pydnp3"
+Issues = "https://github.com/ChargePoint/pydnp3/issues"
+Documentation = "https://www.automatak.com/opendnp3/#documentation"
+
+[tool.scikit-build]
+cmake.build-type = "Release"
+cmake.args = ["-DSTATICLIBS=ON", "-DCMAKE_POLICY_VERSION_MINIMUM=3.5"]
+wheel.packages = []
+build-dir = "build/{wheel_tag}"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+markers = [
+    "known_crash: marks tests that crash due to known pybind11 issues (deselect with '-m not known_crash')",
+]
+addopts = "-m 'not known_crash'"
+
+[tool.ruff]
+target-version = "py38"
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E721", "E712"]
+
+[tool.ruff.lint.per-file-ignores]
+"examples/*" = ["F403", "F405", "E501"]
+"tests/*" = ["F841", "E501"]
