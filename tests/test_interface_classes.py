@@ -15,14 +15,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Neither Kisensum, nor any of its employees, nor any jurisdiction or 
-# organization that has cooperated in the development of these materials, 
-# makes any warranty, express or implied, or assumes any legal liability 
-# or responsibility for the accuracy, completeness, or usefulness or any 
-# information, apparatus, product, software, or process disclosed, or 
-# represents that its use would not infringe privately owned rights. 
-# Reference herein to any specific commercial product, process, or service 
-# by trade name, trademark, manufacturer, or otherwise does not necessarily 
+# Neither Kisensum, nor any of its employees, nor any jurisdiction or
+# organization that has cooperated in the development of these materials,
+# makes any warranty, express or implied, or assumes any legal liability
+# or responsibility for the accuracy, completeness, or usefulness or any
+# information, apparatus, product, software, or process disclosed, or
+# represents that its use would not infringe privately owned rights.
+# Reference herein to any specific commercial product, process, or service
+# by trade name, trademark, manufacturer, or otherwise does not necessarily
 # constitute or imply its endorsement, recommendation, or favoring by Kisensum.
 # }}}
 
@@ -32,11 +32,10 @@ from pydnp3 import opendnp3 as opendnp3
 from pydnp3 import openpal as openpal
 
 
-class TestInterfaceClasses():
-
+class TestInterfaceClasses:
     def test_constructors(self):
         """
-            Create the interface class object and test if the object is not empty.
+        Create the interface class object and test if the object is not empty.
         """
         assert asiodnp3.IChannel() is not None
         assert asiodnp3.IChannelListener() is not None
@@ -106,7 +105,7 @@ class TestInterfaceClasses():
 
     def test_pure_virtual_functions(self):
         """
-            Call the pure virtual function and test if it throws the correct exception error.
+        Call the pure virtual function and test if it throws the correct exception error.
         """
         try:
             asiodnp3.IChannel().GetStatistics()
@@ -169,8 +168,11 @@ class TestInterfaceClasses():
             assert "Tried to call pure virtual function" in str(err)
 
         try:
-            opendnp3.IVisitorCommandPointResult().OnValue(opendnp3.CommandPointResult(
-                100, 10, opendnp3.CommandPointState.INIT, opendnp3.CommandStatus.PROCESSING_LIMITED))
+            opendnp3.IVisitorCommandPointResult().OnValue(
+                opendnp3.CommandPointResult(
+                    100, 10, opendnp3.CommandPointState.INIT, opendnp3.CommandStatus.PROCESSING_LIMITED
+                )
+            )
         except RuntimeError as err:
             assert "Tried to call pure virtual function" in str(err)
 
@@ -236,7 +238,7 @@ class TestInterfaceClasses():
 
     def test_inline_virtual_functions(self):
         """
-            Call the inline virtual function and test if it is called successful.
+        Call the inline virtual function and test if it is called successful.
         """
 
         listener = opendnp3.ILinkListener()
@@ -262,8 +264,12 @@ class TestInterfaceClasses():
         assert outstationApplication.SupportsWriteTimeAndInterval() == False
         assert outstationApplication.WriteTimeAndInterval(opendnp3.ICollectionIndexedTimeAndInterval()) == False
         assert outstationApplication.SupportsAssignClass() == False
-        assert outstationApplication.RecordClassAssignment(opendnp3.AssignClassType.AnalogInput,
-                                                           opendnp3.PointClass.Class0, 1, 10) is None
+        assert (
+            outstationApplication.RecordClassAssignment(
+                opendnp3.AssignClassType.AnalogInput, opendnp3.PointClass.Class0, 1, 10
+            )
+            is None
+        )
         assert outstationApplication.ColdRestartSupport() == opendnp3.RestartMode.UNSUPPORTED
         assert outstationApplication.WarmRestartSupport() == opendnp3.RestartMode.UNSUPPORTED
         assert outstationApplication.ColdRestart() == 0xFFFF

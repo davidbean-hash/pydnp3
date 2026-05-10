@@ -70,7 +70,7 @@ jobs:
 
       - name: Run ruff check
         run: |
-          ruff check tests/ examples/ --select E,F,W
+          ruff check tests/ examples/
 
       - name: Run ruff format check
         run: |

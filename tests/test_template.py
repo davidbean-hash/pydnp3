@@ -32,10 +32,11 @@ from pydnp3 import opendnp3 as opendnp3
 from pydnp3 import openpal as openpal
 
 
-class TestTemplate():
+class TestTemplate:
     """
-        Test functions return instance of template class.
+    Test functions return instance of template class.
     """
+
     def test_AnalogOutput(self):
         assert type(opendnp3.AnalogOutput(1)) == opendnp3.AnalogOutput_Int16
         assert type(opendnp3.AnalogOutput(99999)) == opendnp3.AnalogOutput_Int32
@@ -58,7 +59,9 @@ class TestTemplate():
         assert type(opendnp3.WithIndex(opendnp3.BinaryCommandEvent(), 0)) == opendnp3.IndexedBinaryCommandEvent
         assert type(opendnp3.WithIndex(opendnp3.AnalogCommandEvent(), 0)) == opendnp3.IndexedAnalogCommandEvent
         assert type(opendnp3.WithIndex(opendnp3.SecurityStat(), 0)) == opendnp3.IndexedSecurityStat
-        assert type(opendnp3.WithIndex(opendnp3.ControlRelayOutputBlock(), 0)) == opendnp3.IndexedControlRelayOutputBlock
+        assert (
+            type(opendnp3.WithIndex(opendnp3.ControlRelayOutputBlock(), 0)) == opendnp3.IndexedControlRelayOutputBlock
+        )
         assert type(opendnp3.WithIndex(opendnp3.AnalogOutputInt16(), 0)) == opendnp3.IndexedAnalogOutputInt16
         assert type(opendnp3.WithIndex(opendnp3.AnalogOutputInt32(), 0)) == opendnp3.IndexedAnalogOutputInt32
         assert type(opendnp3.WithIndex(opendnp3.AnalogOutputFloat32(), 0)) == opendnp3.IndexedAnalogOutputFloat32

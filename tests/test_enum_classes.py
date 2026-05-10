@@ -15,14 +15,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Neither Kisensum, nor any of its employees, nor any jurisdiction or 
-# organization that has cooperated in the development of these materials, 
-# makes any warranty, express or implied, or assumes any legal liability 
-# or responsibility for the accuracy, completeness, or usefulness or any 
-# information, apparatus, product, software, or process disclosed, or 
-# represents that its use would not infringe privately owned rights. 
-# Reference herein to any specific commercial product, process, or service 
-# by trade name, trademark, manufacturer, or otherwise does not necessarily 
+# Neither Kisensum, nor any of its employees, nor any jurisdiction or
+# organization that has cooperated in the development of these materials,
+# makes any warranty, express or implied, or assumes any legal liability
+# or responsibility for the accuracy, completeness, or usefulness or any
+# information, apparatus, product, software, or process disclosed, or
+# represents that its use would not infringe privately owned rights.
+# Reference herein to any specific commercial product, process, or service
+# by trade name, trademark, manufacturer, or otherwise does not necessarily
 # constitute or imply its endorsement, recommendation, or favoring by Kisensum.
 # }}}
 
@@ -31,11 +31,10 @@ from pydnp3 import opendnp3 as opendnp3
 from pydnp3 import openpal as openpal
 
 
-class TestEnumClasses():
-
+class TestEnumClasses:
     def test_enumerations(self):
         """
-            Test if the enumeration exists.
+        Test if the enumeration exists.
         """
         assert asiodnp3.Error is not None
         assert openpal.FloatByteOrderValue is not None
@@ -106,8 +105,8 @@ class TestEnumClasses():
 
     def test_enum_type_from_type(self):
         """
-            Convert the enumeration member to raw type, then convert back that raw type to enumeration member,
-            and test if it returns the same thing.
+        Convert the enumeration member to raw type, then convert back that raw type to enumeration member,
+        and test if it returns the same thing.
         """
         rawAuthErrorCode = opendnp3.AuthErrorCodeToType(opendnp3.AuthErrorCode.UNKNOWN_USER)
         assert opendnp3.AuthErrorCodeFromType(rawAuthErrorCode) == opendnp3.AuthErrorCode.UNKNOWN_USER
@@ -174,7 +173,7 @@ class TestEnumClasses():
 
     def test_enum_type_to_string(self):
         """
-            Convert the enumeration member to string, and test is it returns the correct string.
+        Convert the enumeration member to string, and test is it returns the correct string.
         """
         assert opendnp3.AuthErrorCodeToString(opendnp3.AuthErrorCode.AUTHORIZATION_FAILED) == "AUTHORIZATION_FAILED"
         assert opendnp3.CertificateTypeToString(opendnp3.CertificateType.ID_CERTIFICATE) == "ID_CERTIFICATE"

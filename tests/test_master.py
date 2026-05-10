@@ -26,11 +26,10 @@
 # constitute or imply its endorsement, recommendation, or favoring by Kisensum.
 # }}}
 
-from pydnp3 import asiodnp3, asiopal, opendnp3, openpal
-
 import time
-import pytest
 
+import pytest
+from pydnp3 import asiodnp3, asiopal, opendnp3, openpal
 
 FILTERS = opendnp3.levels.NORMAL | opendnp3.levels.ALL_COMMS
 HOST = "127.0.0.1"
@@ -40,7 +39,7 @@ PORT = 20000
 
 class MasterApplication(opendnp3.IMasterApplication):
     """
-        Interface for all master application callback info except for measurement values.
+    Interface for all master application callback info except for measurement values.
     """
 
     def __init__(self):
@@ -52,47 +51,38 @@ class MasterApplication(opendnp3.IMasterApplication):
 
     def OnReceiveIIN(self, iin):
         """
-            Called when a response or unsolicited response is receive from the outstation.
+        Called when a response or unsolicited response is receive from the outstation.
         """
-        self.iin_field = dict(
-            LSB=iin.LSB,
-            MSB=iin.MSB
-        )
+        self.iin_field = dict(LSB=iin.LSB, MSB=iin.MSB)
 
     def OnTaskStart(self, type, id):
         """
-            Task start notification.
+        Task start notification.
         """
-        self.task_id = dict(
-            id=id.GetId(),
-            defined=id.IsDefined()
-        )
+        self.task_id = dict(id=id.GetId(), defined=id.IsDefined())
 
     def OnTaskComplete(self, info):
         """
-            Task completion notification.
+        Task completion notification.
         """
-        self.task_info = dict(
-            type=info.type,
-            result=info.result
-        )
+        self.task_info = dict(type=info.type, result=info.result)
 
     def OnStateChange(self, value):
         """
-            Called when a the reset/unreset status of the link layer changes.
+        Called when a the reset/unreset status of the link layer changes.
         """
         self.link_status = value
 
     def Now(self):
         """
-            Returns a UTCTimestamp of the current time.
+        Returns a UTCTimestamp of the current time.
         """
         pass
 
 
 class ChannelListener(asiodnp3.IChannelListener):
     """
-        Callback interface for receiving information about a running channel.
+    Callback interface for receiving information about a running channel.
     """
 
     def __init__(self):
@@ -101,14 +91,14 @@ class ChannelListener(asiodnp3.IChannelListener):
 
     def OnStateChange(self, state):
         """
-            State change notification.
+        State change notification.
         """
         self.state = state
 
 
 class LogHandler(openpal.ILogHandler):
     """
-        Callback interface for log messages.
+    Callback interface for log messages.
     """
 
     def __init__(self):
@@ -117,7 +107,7 @@ class LogHandler(openpal.ILogHandler):
 
     def Log(self, entry):
         """
-            Log information.
+        Log information.
         """
         if entry.loggerid == "tcpclient":
             self.tcp_client = True
@@ -137,12 +127,15 @@ def collection_callback(result=None):
     """
     :type result: opendnp3.CommandPointResult
     """
-    print("Header: {0} | Index:  {1} | State:  {2} | Status: {3}".format(
-        result.headerIndex,
-        result.index,
-        opendnp3.CommandPointStateToString(result.state),
-        opendnp3.CommandStatusToString(result.status)
-    ))
+    print(
+        "Header: {0} | Index:  {1} | State:  {2} | Status: {3}".format(
+            result.headerIndex,
+            result.index,
+            opendnp3.CommandPointStateToString(result.state),
+            opendnp3.CommandStatusToString(result.status),
+        )
+    )
+
 
 def command_callback(result=None):
     """
@@ -158,12 +151,9 @@ def run_outstation():
     manager = asiodnp3.DNP3Manager(1, asiodnp3.ConsoleLogger().Create())
 
     # Connect via a TCPServer socket to a server
-    channel = manager.AddTCPServer("server",
-                                   FILTERS,
-                                   asiopal.ChannelRetry().Default(),
-                                   LOCAL,
-                                   PORT,
-                                   asiodnp3.PrintingChannelListener().Create())
+    channel = manager.AddTCPServer(
+        "server", FILTERS, asiopal.ChannelRetry().Default(), LOCAL, PORT, asiodnp3.PrintingChannelListener().Create()
+    )
 
     # A composite configuration struct that contains all the config information for a dnp3 outstation stack
     config = asiodnp3.OutstationStackConfig(opendnp3.DatabaseSizes.AllTypes(10))
@@ -173,17 +163,18 @@ def run_outstation():
     config.link.KeepAliveTimeout = openpal.TimeDuration().Max()
 
     # Add an outstation to a communication channel
-    outstation = channel.AddOutstation("outstation",
-                                       opendnp3.SuccessCommandHandler().Create(),
-                                       opendnp3.DefaultOutstationApplication().Create(),
-                                       config)
+    outstation = channel.AddOutstation(
+        "outstation",
+        opendnp3.SuccessCommandHandler().Create(),
+        opendnp3.DefaultOutstationApplication().Create(),
+        config,
+    )
     outstation.Enable()
 
     return manager
 
 
 class TestMaster:
-
     def config_master(self):
         # Callback interface for log messages
         self.handler = LogHandler()
@@ -193,13 +184,9 @@ class TestMaster:
 
         # Connect via a TCPClient socket to an outstation
         self.channel_listener = ChannelListener()
-        self.channel = self.manager.AddTCPClient("tcpclient",
-                                                 FILTERS,
-                                                 asiopal.ChannelRetry(),
-                                                 HOST,
-                                                 LOCAL,
-                                                 PORT,
-                                                 self.channel_listener)
+        self.channel = self.manager.AddTCPClient(
+            "tcpclient", FILTERS, asiopal.ChannelRetry(), HOST, LOCAL, PORT, self.channel_listener
+        )
 
         # Master config object for a master
         stack_config = asiodnp3.MasterStackConfig()
@@ -208,18 +195,19 @@ class TestMaster:
 
         # Add a master to a communication channel
         self.master_application = MasterApplication()
-        self.master = self.channel.AddMaster("master",
-                                             asiodnp3.PrintingSOEHandler().Create(),
-                                             self.master_application,
-                                             stack_config)
+        self.master = self.channel.AddMaster(
+            "master", asiodnp3.PrintingSOEHandler().Create(), self.master_application, stack_config
+        )
 
         # Do an integrity poll (Class 3/2/1/0) once per minute
-        self.integrity_scan = self.master.AddClassScan(opendnp3.ClassField().AllClasses(),
-                                                       openpal.TimeDuration().Minutes(1))
+        self.integrity_scan = self.master.AddClassScan(
+            opendnp3.ClassField().AllClasses(), openpal.TimeDuration().Minutes(1)
+        )
 
         # Do a Class 1 exception poll every 5 seconds
-        self.exception_scan = self.master.AddClassScan(opendnp3.ClassField(opendnp3.ClassField.CLASS_1),
-                                                       openpal.TimeDuration().Seconds(2))
+        self.exception_scan = self.master.AddClassScan(
+            opendnp3.ClassField(opendnp3.ClassField.CLASS_1), openpal.TimeDuration().Seconds(2)
+        )
 
         # Enable the master. This will start communications.
         self.master.Enable()
@@ -249,17 +237,15 @@ class TestMaster:
             self.master.SelectAndOperate(crob, 0, command_callback)
         if cmd == "c2":
             crob = opendnp3.ControlRelayOutputBlock(opendnp3.ControlCode.LATCH_ON)
-            commands = opendnp3.CommandSet([opendnp3.WithIndex(crob, 0),
-                                            opendnp3.WithIndex(crob, 1)])
+            commands = opendnp3.CommandSet([opendnp3.WithIndex(crob, 0), opendnp3.WithIndex(crob, 1)])
             self.master.SelectAndOperate(commands, command_callback)
         if cmd == "d1":
-            self.master.DirectOperate(opendnp3.ControlRelayOutputBlock(opendnp3.ControlCode.LATCH_ON),
-                                 4,
-                                 command_callback)
+            self.master.DirectOperate(
+                opendnp3.ControlRelayOutputBlock(opendnp3.ControlCode.LATCH_ON), 4, command_callback
+            )
         if cmd == "d2":
             crob = opendnp3.ControlRelayOutputBlock(opendnp3.ControlCode.LATCH_ON)
-            commands = opendnp3.CommandSet([opendnp3.WithIndex(crob, 0),
-                                            opendnp3.WithIndex(crob, 1)])
+            commands = opendnp3.CommandSet([opendnp3.WithIndex(crob, 0), opendnp3.WithIndex(crob, 1)])
             self.master.DirectOperate(commands, command_callback)
         if cmd == "r":
             self.master.Restart(opendnp3.RestartType.COLD, restart_callback)
@@ -271,17 +257,10 @@ class TestMaster:
         # Test master application tracking info
         assert self.master_application.link_status == opendnp3.LinkStatus.UNRESET
         assert self.master_application.task_info == dict(
-            type=opendnp3.MasterTaskType.USER_TASK,
-            result=opendnp3.TaskCompletion.SUCCESS
+            type=opendnp3.MasterTaskType.USER_TASK, result=opendnp3.TaskCompletion.SUCCESS
         )
-        assert self.master_application.iin_field == dict(
-            LSB=0,
-            MSB=0
-        )
-        assert self.master_application.task_id == dict(
-            defined=False,
-            id=-1
-        )
+        assert self.master_application.iin_field == dict(LSB=0, MSB=0)
+        assert self.master_application.task_id == dict(defined=False, id=-1)
 
         time.sleep(1)
         self.shutdown()

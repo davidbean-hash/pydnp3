@@ -15,14 +15,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Neither Kisensum, nor any of its employees, nor any jurisdiction or 
-# organization that has cooperated in the development of these materials, 
-# makes any warranty, express or implied, or assumes any legal liability 
-# or responsibility for the accuracy, completeness, or usefulness or any 
-# information, apparatus, product, software, or process disclosed, or 
-# represents that its use would not infringe privately owned rights. 
-# Reference herein to any specific commercial product, process, or service 
-# by trade name, trademark, manufacturer, or otherwise does not necessarily 
+# Neither Kisensum, nor any of its employees, nor any jurisdiction or
+# organization that has cooperated in the development of these materials,
+# makes any warranty, express or implied, or assumes any legal liability
+# or responsibility for the accuracy, completeness, or usefulness or any
+# information, apparatus, product, software, or process disclosed, or
+# represents that its use would not infringe privately owned rights.
+# Reference herein to any specific commercial product, process, or service
+# by trade name, trademark, manufacturer, or otherwise does not necessarily
 # constitute or imply its endorsement, recommendation, or favoring by Kisensum.
 # }}}
 
@@ -32,11 +32,10 @@ from pydnp3 import opendnp3 as opendnp3
 from pydnp3 import openpal as openpal
 
 
-class TestConstructors():
-
+class TestConstructors:
     def test_default_constructors(self):
         """
-            Create the class object with default values for instance variable and test if the object is not empty.
+        Create the class object with default values for instance variable and test if the object is not empty.
         """
         assert asiodnp3.ConsoleLogger() is not None
         assert asiodnp3.DefaultListenCallbacks() is not None
@@ -159,7 +158,7 @@ class TestConstructors():
 
     def test_passing_args(self):
         """
-            Create the class object with defined arguments and test if the object is not empty.
+        Create the class object with defined arguments and test if the object is not empty.
         """
         assert asiodnp3.ConsoleLogger(True) is not None
         assert asiodnp3.DatabaseConfig(opendnp3.DatabaseSizes()) is not None
@@ -168,16 +167,20 @@ class TestConstructors():
         assert asiodnp3.OutstationStackConfig(opendnp3.DatabaseSizes()) is not None
         assert asiodnp3.X509Info(1, openpal.RSlice(), "test") is not None
         assert asiopal.ChannelRetry(openpal.TimeDuration(), openpal.TimeDuration()) is not None
-        assert asiopal.ChannelRetry(openpal.TimeDuration(), openpal.TimeDuration(),
-                                    asiopal.IOpenDelayStrategy()) is not None
+        assert (
+            asiopal.ChannelRetry(openpal.TimeDuration(), openpal.TimeDuration(), asiopal.IOpenDelayStrategy())
+            is not None
+        )
         assert asiopal.Executor(asiopal.IO()) is not None
         assert asiopal.IPEndpoint("127.0.0.1", 502) is not None
         assert asiopal.LoggingConnectionCondition(openpal.Logger()) is not None
         assert asiopal.SerialChannel(asiopal.Executor(asiopal.IO())) is not None
-        assert asiopal.TCPClient(openpal.Logger(),
-                                 asiopal.Executor(asiopal.IO()),
-                                 asiopal.IPEndpoint("127.0.0.1", 502),
-                                 "adapter") is not None
+        assert (
+            asiopal.TCPClient(
+                openpal.Logger(), asiopal.Executor(asiopal.IO()), asiopal.IPEndpoint("127.0.0.1", 502), "adapter"
+            )
+            is not None
+        )
         assert asiopal.ThreadPool(openpal.Logger(), asiopal.IO(), 1) is not None
         assert asiopal.TLSConfig("~/files/peerCert", "~/files/localCert", "~/files/privateKey") is not None
         assert opendnp3.AnalogOutputInt16(1, opendnp3.CommandStatus.TIMEOUT) is not None
@@ -191,8 +194,12 @@ class TestConstructors():
         assert opendnp3.ClassField(opendnp3.PointClass.Class0) is not None
         assert opendnp3.ClassField(1) is not None
         assert opendnp3.ClassField(True, False, True, False) is not None
-        assert opendnp3.ControlRelayOutputBlock(opendnp3.ControlCode.LATCH_ON, 1, 100, 100,
-                                                opendnp3.CommandStatus.AUTOMATION_INHIBIT) is not None
+        assert (
+            opendnp3.ControlRelayOutputBlock(
+                opendnp3.ControlCode.LATCH_ON, 1, 100, 100, opendnp3.CommandStatus.AUTOMATION_INHIBIT
+            )
+            is not None
+        )
         assert opendnp3.ControlRelayOutputBlock(0x1, 1, 100, 100, opendnp3.CommandStatus.AUTOMATION_INHIBIT) is not None
         assert opendnp3.GroupVariationID(0x10, 0x1) is not None
         assert opendnp3.IINField(opendnp3.IINBit.ALL_STATIONS) is not None
@@ -235,17 +242,41 @@ class TestConstructors():
         assert opendnp3.LinkConfig(True, False, 100, 10, 10, openpal.TimeDuration(), openpal.TimeDuration()) is not None
         assert opendnp3.LinkHeaderFields(opendnp3.LinkFunction.INVALID, False, True, False, 10, 10) is not None
         assert opendnp3.LinkStatistics(opendnp3.LinkStatisticsChannel(), opendnp3.LinkStatisticsParser()) is not None
-        assert opendnp3.CommandPointResult(100, 10, opendnp3.CommandPointState.INIT,
-                                           opendnp3.CommandStatus.PROCESSING_LIMITED) is not None
-        assert opendnp3.HeaderInfo(opendnp3.GroupVariation.Group10Var0, opendnp3.QualifierCode.UINT8_CNT,
-                                   opendnp3.TimestampMode.SYNCHRONIZED, 100) is not None
+        assert (
+            opendnp3.CommandPointResult(
+                100, 10, opendnp3.CommandPointState.INIT, opendnp3.CommandStatus.PROCESSING_LIMITED
+            )
+            is not None
+        )
+        assert (
+            opendnp3.HeaderInfo(
+                opendnp3.GroupVariation.Group10Var0,
+                opendnp3.QualifierCode.UINT8_CNT,
+                opendnp3.TimestampMode.SYNCHRONIZED,
+                100,
+            )
+            is not None
+        )
         assert opendnp3.RestartOperationResult(opendnp3.TaskCompletion.SUCCESS, openpal.TimeDuration()) is not None
         assert opendnp3.DatabaseSizes(0, 1, 2, 3, 4, 5, 6, 7) is not None
         assert opendnp3.EventBufferConfig(0, 1, 2, 3, 4, 5, 6, 7) is not None
         assert opendnp3.OutstationConfig(opendnp3.OutstationParams(), opendnp3.EventBufferConfig()) is not None
-        assert opendnp3.OutstationParams(opendnp3.IndexMode.Contiguous, 0x3, openpal.TimeDuration(),
-                                         openpal.TimeDuration(), openpal.TimeDuration(), openpal.TimeDuration(),
-                                         10, 20, True, opendnp3.StaticTypeBitField(), opendnp3.ClassField()) is not None
+        assert (
+            opendnp3.OutstationParams(
+                opendnp3.IndexMode.Contiguous,
+                0x3,
+                openpal.TimeDuration(),
+                openpal.TimeDuration(),
+                openpal.TimeDuration(),
+                openpal.TimeDuration(),
+                10,
+                20,
+                True,
+                opendnp3.StaticTypeBitField(),
+                opendnp3.ClassField(),
+            )
+            is not None
+        )
         assert opendnp3.SimpleCommandHandler(opendnp3.CommandStatus.SUCCESS) is not None
         assert opendnp3.StaticTypeBitField(1) is not None
         assert opendnp3.StackStatistics(opendnp3.StackStatisticsLink(), opendnp3.StackStatisticsTransport()) is not None
@@ -274,7 +305,7 @@ class TestConstructors():
 
     def test_passing_kwargs(self):
         """
-            Create the class object with defined kwargs and test if the object is not empty.
+        Create the class object with defined kwargs and test if the object is not empty.
         """
         assert opendnp3.AnalogOutputInt16(status=opendnp3.CommandStatus.SUCCESS) is not None
         assert opendnp3.AnalogOutputInt32(status=opendnp3.CommandStatus.NO_SELECT) is not None
@@ -299,5 +330,4 @@ class TestConstructors():
 
         # CommandSet passing a list
         crob = opendnp3.ControlRelayOutputBlock(opendnp3.ControlCode.LATCH_ON)
-        assert opendnp3.CommandSet(items=[opendnp3.WithIndex(crob, 0),
-                                          opendnp3.WithIndex(crob, 1)]) is not None
+        assert opendnp3.CommandSet(items=[opendnp3.WithIndex(crob, 0), opendnp3.WithIndex(crob, 1)]) is not None
