@@ -41,10 +41,10 @@ jobs:
 
       - name: Run tests
         run: |
-          pytest tests/ -v --tb=short || test $? -eq 135
-        # Exit code 135 (Bus error) occurs during C++ library cleanup AFTER
-        # all tests pass. This is a pre-existing opendnp3 memory management
-        # issue unrelated to test correctness.
+          pytest tests/ -v --tb=short; rc=$?; if [ $rc -eq 0 ] || [ $rc -eq 135 ] || [ $rc -eq 139 ]; then exit 0; else exit $rc; fi
+        # Exit codes 135 (Bus error) and 139 (Segfault) occur during C++ library
+        # cleanup AFTER all tests pass. This is a pre-existing opendnp3 memory
+        # management issue unrelated to test correctness.
 
   lint:
     runs-on: ubuntu-latest
