@@ -235,7 +235,7 @@ class OutstationApplication(opendnp3.IOutstationApplication):
                 # Send a float analog value to index 3 (configured as Group30Var5)
                 app.apply_update(opendnp3.Analog(3.14), 3)
 
-                # Send a double-precision float to index 4
+                # Send a single-precision float to index 4 (configured as Group30Var5)
                 app.apply_update(opendnp3.Analog(2.71828), 4)
 
         :param value: An instance of Analog, Binary, or another opendnp3 data value.
