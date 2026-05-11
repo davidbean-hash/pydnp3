@@ -60,6 +60,10 @@ class OutstationApplication(opendnp3.IOutstationApplication):
 
         _log.debug('Creating the DNP3 channel, a TCP server.')
         self.retry_parameters = asiopal.ChannelRetry().Default()
+        # NOTE: The listener must be stored as an instance variable (self.listener) to prevent
+        # Python's garbage collector from destroying it. The C++ side holds a raw reference and
+        # will call OnStateChange on it -- if the Python object is GC'd, this causes:
+        # "Tried to call pure virtual function IChannelListener::OnStateChange"
         self.listener = AppChannelListener()
         # self.listener = asiodnp3.PrintingChannelListener().Create()       # (or use this during regression testing)
         self.channel = self.manager.AddTCPServer("server",
