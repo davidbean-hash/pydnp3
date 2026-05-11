@@ -86,7 +86,8 @@ void declareArrayView(py::module &m, std::string const &valueType, std::string c
             (ValueType& (openpal::ArrayView<ValueType, IndexType>::*)(IndexType))
             &openpal::ArrayView<ValueType, IndexType>::operator[],
             (":type index: " + indexType).c_str(),
-            py::arg("index")
+            py::arg("index"),
+            py::return_value_policy::reference_internal
         )
 
         .def(
@@ -94,7 +95,8 @@ void declareArrayView(py::module &m, std::string const &valueType, std::string c
             (const ValueType& (openpal::ArrayView<ValueType, IndexType>::*)(IndexType) const)
             &openpal::ArrayView<ValueType, IndexType>::operator[],
             (":type index: " + indexType).c_str(),
-            py::arg("index")
+            py::arg("index"),
+            py::return_value_policy::reference_internal
         );
 
     // ----- func: openpal::ArrayView -----
