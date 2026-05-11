@@ -96,15 +96,34 @@ class OutstationApplication(opendnp3.IOutstationApplication):
         """
             Configure the Outstation's database of input point definitions.
 
-            Configure two Analog points (group/variation 30.1) at indexes 1 and 2.
+            Configure two integer Analog points (group/variation 30.1) at indexes 1-2.
+            Configure two float Analog points (group/variation 30.5) at indexes 3-4.
             Configure two Binary points (group/variation 1.2) at indexes 1 and 2.
+
+            Analog static variations:
+                Group30Var1 = 32-bit integer
+                Group30Var5 = single-precision float (32-bit)
+                Group30Var6 = double-precision float (64-bit)
+
+            Analog event variations:
+                Group32Var1 = 32-bit integer without time
+                Group32Var5 = single-precision float (32-bit) without time
+                Group32Var7 = single-precision float (32-bit) with time
         """
+        # Integer analog points (indexes 1-2): use Group30Var1 (32-bit integer)
         db_config.analog[1].clazz = opendnp3.PointClass.Class2
         db_config.analog[1].svariation = opendnp3.StaticAnalogVariation.Group30Var1
         db_config.analog[1].evariation = opendnp3.EventAnalogVariation.Group32Var7
         db_config.analog[2].clazz = opendnp3.PointClass.Class2
         db_config.analog[2].svariation = opendnp3.StaticAnalogVariation.Group30Var1
         db_config.analog[2].evariation = opendnp3.EventAnalogVariation.Group32Var7
+        # Float analog points (indexes 3-4): use Group30Var5 (single-precision float)
+        db_config.analog[3].clazz = opendnp3.PointClass.Class2
+        db_config.analog[3].svariation = opendnp3.StaticAnalogVariation.Group30Var5
+        db_config.analog[3].evariation = opendnp3.EventAnalogVariation.Group32Var5
+        db_config.analog[4].clazz = opendnp3.PointClass.Class2
+        db_config.analog[4].svariation = opendnp3.StaticAnalogVariation.Group30Var5
+        db_config.analog[4].evariation = opendnp3.EventAnalogVariation.Group32Var5
         db_config.binary[1].clazz = opendnp3.PointClass.Class2
         db_config.binary[1].svariation = opendnp3.StaticBinaryVariation.Group1Var2
         db_config.binary[1].evariation = opendnp3.EventBinaryVariation.Group2Var2
@@ -204,6 +223,21 @@ class OutstationApplication(opendnp3.IOutstationApplication):
 
             The data value gets sent to the Master as a side-effect.
 
+            Supports both integer and float values. For float values, ensure the
+            corresponding database point is configured with Group30Var5 (float32)
+            or Group30Var6 (float64) static variation.
+
+            Examples::
+
+                # Send an integer analog value to index 1 (configured as Group30Var1)
+                app.apply_update(opendnp3.Analog(7), 1)
+
+                # Send a float analog value to index 3 (configured as Group30Var5)
+                app.apply_update(opendnp3.Analog(3.14), 3)
+
+                # Send a single-precision float to index 4 (configured as Group30Var5)
+                app.apply_update(opendnp3.Analog(2.71828), 4)
+
         :param value: An instance of Analog, Binary, or another opendnp3 data value.
         :param index: (integer) Index of the data definition in the opendnp3 database.
         """
@@ -286,6 +320,8 @@ def main():
     app = OutstationApplication()
     _log.debug('Initialization complete. In command loop.')
     # Ad-hoc tests can be inserted here if desired. See outstation_cmd.py for examples.
+    # Example: send a float analog value to index 3 (configured with Group30Var5)
+    app.apply_update(opendnp3.Analog(3.14), 3)
     app.shutdown()
     _log.debug('Exiting.')
     exit()
