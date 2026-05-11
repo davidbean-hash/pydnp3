@@ -86,18 +86,20 @@ void declareArray(py::module &m, std::string const &valueType, std::string const
 
         .def(
             "__getitem__",
-            (ValueType& (openpal::Array<ValueType, IndexType>::*)(IndexType))
-            &openpal::Array<ValueType, IndexType>::operator[],
+            [](openpal::Array<ValueType, IndexType> &self, IndexType index) -> ValueType& {
+                return self[index];
+            },
             (":type index: " + indexType).c_str(),
-            py::arg("index")
+            py::arg("index"),
+            py::return_value_policy::reference_internal
         )
 
         .def(
-            "__getitem__",
-            (const ValueType& (openpal::Array<ValueType, IndexType>::*)(IndexType) const)
-            &openpal::Array<ValueType, IndexType>::operator[],
-            (":type index: " + indexType).c_str(),
-            py::arg("index")
+            "__setitem__",
+            [](openpal::Array<ValueType, IndexType> &self, IndexType index, const ValueType &value) {
+                self[index] = value;
+            },
+            py::arg("index"), py::arg("value")
         );
 }
 
