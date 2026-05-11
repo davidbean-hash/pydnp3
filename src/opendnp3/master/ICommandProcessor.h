@@ -47,7 +47,10 @@ using namespace std;
 // This avoids the pybind11::cast_error for non-copyable ICommandTaskResult.
 opendnp3::CommandCallbackT WrapPythonCommandCallback(py::object callback)
 {
-    auto shared_cb = std::make_shared<py::object>(std::move(callback));
+    auto shared_cb = std::shared_ptr<py::object>(
+        new py::object(std::move(callback)),
+        [](py::object* obj) { py::gil_scoped_acquire acq; delete obj; }
+    );
     return [shared_cb](const opendnp3::ICommandTaskResult& result) {
         py::gil_scoped_acquire acq;
         py::object py_result = py::cast(result, py::return_value_policy::reference);
