@@ -3,6 +3,21 @@ import os
 import subprocess
 import re
 import platform
+import warnings
+
+if sys.version_info[0] < 3:
+    warnings.warn(
+        "pydnp3 requires Python 3.x for modern builds. "
+        "Python 2.x is no longer supported. "
+        "Please upgrade to Python 3.6 or later.",
+        UserWarning,
+        stacklevel=1
+    )
+    sys.exit(
+        "ERROR: pydnp3 requires Python 3.x. "
+        "You are running Python {}.{}. "
+        "Please use Python 3.6 or later.".format(sys.version_info[0], sys.version_info[1])
+    )
 
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
@@ -48,7 +63,8 @@ class CMakeBuild(build_ext):
         else:
             cmake_args += ['-DCMAKE_BUILD_TYPE=' + cfg]
             cmake_args += ['-DSTATICLIBS=ON']
-            build_args += ['--', '-j2']
+            build_jobs = os.environ.get('PYDNP3_BUILD_JOBS', '2')
+            build_args += ['--', '-j{}'.format(build_jobs)]
 
         env = os.environ.copy()
         env['CXXFLAGS'] = '{} -DVERSION_INFO=\\"{}\\"'.format(env.get('CXXFLAGS', ''),
