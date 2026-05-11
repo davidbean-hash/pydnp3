@@ -83,18 +83,19 @@ void declareArrayView(py::module &m, std::string const &valueType, std::string c
 
         .def(
             "__getitem__",
-            (ValueType& (openpal::ArrayView<ValueType, IndexType>::*)(IndexType))
-            &openpal::ArrayView<ValueType, IndexType>::operator[],
+            [](openpal::ArrayView<ValueType, IndexType> &self, IndexType index) -> ValueType& {
+                return self[index];
+            },
             (":type index: " + indexType).c_str(),
             py::arg("index")
         )
 
         .def(
-            "__getitem__",
-            (const ValueType& (openpal::ArrayView<ValueType, IndexType>::*)(IndexType) const)
-            &openpal::ArrayView<ValueType, IndexType>::operator[],
-            (":type index: " + indexType).c_str(),
-            py::arg("index")
+            "__setitem__",
+            [](openpal::ArrayView<ValueType, IndexType> &self, IndexType index, const ValueType &value) {
+                self[index] = value;
+            },
+            py::arg("index"), py::arg("value")
         );
 
     // ----- func: openpal::ArrayView -----

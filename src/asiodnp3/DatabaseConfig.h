@@ -57,50 +57,50 @@ void bind_DatabaseConfig(py::module &m)
 
         .def_property_readonly(
             "binary",
-            [](const asiodnp3::DatabaseConfig &self) { return &self.binary;},
-            py::return_value_policy::reference
+            [](asiodnp3::DatabaseConfig &self) { return &self.binary;},
+            py::return_value_policy::reference_internal
         )
 
         .def_property_readonly(
             "doubleBinary",
-            [](const asiodnp3::DatabaseConfig &self) { return &self.doubleBinary;},
-            py::return_value_policy::reference
+            [](asiodnp3::DatabaseConfig &self) { return &self.doubleBinary;},
+            py::return_value_policy::reference_internal
         )
 
         .def_property_readonly(
             "analog",
-            [](const asiodnp3::DatabaseConfig &self) { return &self.analog;},
-            py::return_value_policy::reference
+            [](asiodnp3::DatabaseConfig &self) { return &self.analog;},
+            py::return_value_policy::reference_internal
         )
 
         .def_property_readonly(
             "counter",
-            [](const asiodnp3::DatabaseConfig &self) { return &self.counter;},
-            py::return_value_policy::reference
+            [](asiodnp3::DatabaseConfig &self) { return &self.counter;},
+            py::return_value_policy::reference_internal
         )
 
         .def_property_readonly(
             "frozenCounter",
-            [](const asiodnp3::DatabaseConfig &self) { return &self.frozenCounter;},
-            py::return_value_policy::reference
+            [](asiodnp3::DatabaseConfig &self) { return &self.frozenCounter;},
+            py::return_value_policy::reference_internal
         )
 
         .def_property_readonly(
             "boStatus",
-            [](const asiodnp3::DatabaseConfig &self) { return &self.boStatus;},
-            py::return_value_policy::reference
+            [](asiodnp3::DatabaseConfig &self) { return &self.boStatus;},
+            py::return_value_policy::reference_internal
         )
 
         .def_property_readonly(
             "aoStatus",
-            [](const asiodnp3::DatabaseConfig &self) { return &self.aoStatus;},
-            py::return_value_policy::reference
+            [](asiodnp3::DatabaseConfig &self) { return &self.aoStatus;},
+            py::return_value_policy::reference_internal
         )
 
         .def_property_readonly(
             "timeAndInterval",
-            [](const asiodnp3::DatabaseConfig &self) { return &self.timeAndInterval;},
-            py::return_value_policy::reference
+            [](asiodnp3::DatabaseConfig &self) { return &self.timeAndInterval;},
+            py::return_value_policy::reference_internal
         );
 }
 
