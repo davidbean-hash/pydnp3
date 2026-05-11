@@ -28,6 +28,41 @@ At the moment, this library must be built from source:
 ```
 
 
+## Troubleshooting
+
+### Build fails on Python >= 3.10
+
+Older versions of `setup.py` used `distutils.version.LooseVersion`, which was deprecated in
+Python 3.10 and removed in Python 3.12. This has been fixed by replacing it with a simple
+tuple-based version comparison that works on all Python versions.
+
+### Build fails on Raspberry Pi (out of memory)
+
+The default parallel compilation (`-j2`) can exhaust memory on devices with limited RAM such as
+the Raspberry Pi. You can control the number of parallel build jobs with the `PYDNP3_BUILD_JOBS`
+environment variable:
+
+```
+PYDNP3_BUILD_JOBS=1 python setup.py install
+```
+
+On ARM platforms (`armv*` / `aarch64`), the build defaults to `-j1` automatically.
+
+Additional tips for memory-constrained devices:
+
+* **Increase swap space** to give the compiler more virtual memory:
+  ```
+  sudo fallocate -l 1G /swapfile
+  sudo chmod 600 /swapfile
+  sudo mkswap /swapfile
+  sudo swapon /swapfile
+  ```
+
+* **Use `MinSizeRel` build type** to reduce compiler memory usage:
+  ```
+  CMAKE_BUILD_TYPE=MinSizeRel PYDNP3_BUILD_JOBS=1 python setup.py install
+  ```
+
 ## Documentation
 
 pydnp3 is a thin wrapper around most all of the opendnp3 classes.  Documentation for the opendnp3
