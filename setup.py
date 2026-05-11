@@ -6,7 +6,6 @@ import platform
 
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
-from distutils.version import LooseVersion
 __version__ = '0.1.0'
 
 
@@ -25,8 +24,8 @@ class CMakeBuild(build_ext):
                                ", ".join(e.name for e in self.extensions))
 
         if platform.system() == "Windows":
-            cmake_version = LooseVersion(re.search(r'version\s*([\d.]+)', out.decode()).group(1))
-            if cmake_version < '3.1.0':
+            cmake_version = tuple(int(x) for x in re.search(r'version\s*([\d.]+)', out.decode()).group(1).split('.'))
+            if cmake_version < (3, 1, 0):
                 raise RuntimeError("CMake >= 3.1.0 is required on Windows")
 
         for ext in self.extensions:
@@ -48,7 +47,14 @@ class CMakeBuild(build_ext):
         else:
             cmake_args += ['-DCMAKE_BUILD_TYPE=' + cfg]
             cmake_args += ['-DSTATICLIBS=ON']
-            build_args += ['--', '-j2']
+            # Allow configuring parallel build jobs via environment variable.
+            # Defaults to 1 on ARM (to avoid OOM on devices like Raspberry Pi),
+            # and 2 on other architectures.
+            machine = platform.machine().lower()
+            is_arm = machine.startswith('arm') or machine.startswith('aarch')
+            default_jobs = '1' if is_arm else '2'
+            build_jobs = os.environ.get('PYDNP3_BUILD_JOBS', default_jobs)
+            build_args += ['--', '-j{}'.format(build_jobs)]
 
         env = os.environ.copy()
         env['CXXFLAGS'] = '{} -DVERSION_INFO=\\"{}\\"'.format(env.get('CXXFLAGS', ''),
