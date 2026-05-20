@@ -28,6 +28,18 @@ At the moment, this library must be built from source:
 ```
 
 
+## Examples
+
+The `examples/` directory contains working Master and Outstation implementations with interactive
+command-line interfaces.  See [`examples/README.md`](examples/README.md) for comprehensive
+documentation including:
+
+- Quick-start guide for running a Master/Outstation pair
+- IP configuration for local and remote connections
+- How to poll multiple outstations from a single master
+- Full command reference for the interactive CLIs
+- Troubleshooting guide for common issues
+
 ## Documentation
 
 pydnp3 is a thin wrapper around most all of the opendnp3 classes.  Documentation for the opendnp3
