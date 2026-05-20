@@ -207,9 +207,10 @@ class TestMaster:
         stack_config.link.RemoteAddr = 10
 
         # Add a master to a communication channel
+        self.soe_handler = asiodnp3.PrintingSOEHandler().Create()
         self.master_application = MasterApplication()
         self.master = self.channel.AddMaster("master",
-                                             asiodnp3.PrintingSOEHandler().Create(),
+                                             self.soe_handler,
                                              self.master_application,
                                              stack_config)
 
