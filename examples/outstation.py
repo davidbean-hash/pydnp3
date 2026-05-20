@@ -96,7 +96,11 @@ class OutstationApplication(opendnp3.IOutstationApplication):
         """
             Configure the Outstation's database of input point definitions.
 
-            Configure two Analog points (group/variation 30.1) at indexes 1 and 2.
+            Configure two Analog points (group/variation 30.1) at indexes 1 and 2
+            for 32-bit integer values.
+            Configure two Analog points at indexes 3 and 4 for float values:
+                - Index 3: Group30Var5 (single-precision float)
+                - Index 4: Group30Var6 (double-precision float)
             Configure two Binary points (group/variation 1.2) at indexes 1 and 2.
         """
         db_config.analog[1].clazz = opendnp3.PointClass.Class2
@@ -105,6 +109,12 @@ class OutstationApplication(opendnp3.IOutstationApplication):
         db_config.analog[2].clazz = opendnp3.PointClass.Class2
         db_config.analog[2].svariation = opendnp3.StaticAnalogVariation.Group30Var1
         db_config.analog[2].evariation = opendnp3.EventAnalogVariation.Group32Var7
+        db_config.analog[3].clazz = opendnp3.PointClass.Class2
+        db_config.analog[3].svariation = opendnp3.StaticAnalogVariation.Group30Var5
+        db_config.analog[3].evariation = opendnp3.EventAnalogVariation.Group32Var7
+        db_config.analog[4].clazz = opendnp3.PointClass.Class2
+        db_config.analog[4].svariation = opendnp3.StaticAnalogVariation.Group30Var6
+        db_config.analog[4].evariation = opendnp3.EventAnalogVariation.Group32Var7
         db_config.binary[1].clazz = opendnp3.PointClass.Class2
         db_config.binary[1].svariation = opendnp3.StaticBinaryVariation.Group1Var2
         db_config.binary[1].evariation = opendnp3.EventBinaryVariation.Group2Var2
