@@ -99,6 +99,30 @@ namespace opendnp3 {
     };
 }
 
+namespace {
+    // Wraps a Python callback object into a CommandCallbackT that uses
+    // py::return_value_policy::reference for the non-copyable ICommandTaskResult.
+    // If the callback is already a C++ CommandCallbackT, it is passed through directly.
+    // Uses a shared_ptr with a GIL-acquiring custom deleter so the captured
+    // py::object is safely destroyed even from a C++ I/O thread.
+    opendnp3::CommandCallbackT wrap_callback(py::object callback) {
+        if (py::isinstance<opendnp3::CommandCallbackT>(callback)) {
+            return callback.cast<opendnp3::CommandCallbackT>();
+        }
+        auto prevent = std::shared_ptr<py::object>(
+            new py::object(std::move(callback)),
+            [](py::object* p) {
+                py::gil_scoped_acquire acquire;
+                delete p;
+            }
+        );
+        return [prevent](const opendnp3::ICommandTaskResult& result) -> void {
+            py::gil_scoped_acquire acquire;
+            (*prevent)(py::cast(result, py::return_value_policy::reference));
+        };
+    }
+}
+
 void bind_ICommandProcessor(py::module &m)
 {
     // ----- class: opendnp3::ICommandProcessor -----
@@ -118,51 +142,61 @@ void bind_ICommandProcessor(py::module &m)
 
     cls.def(
         "SelectAndOperate",
-        (void (opendnp3::ICommandProcessor::*)(const opendnp3::ControlRelayOutputBlock &,
-                                               uint16_t,
-                                               const opendnp3::CommandCallbackT &,
-                                               const opendnp3::TaskConfig &))
-        &opendnp3::ICommandProcessor::SelectAndOperate<opendnp3::ControlRelayOutputBlock>,
+        [](opendnp3::ICommandProcessor &self,
+           const opendnp3::ControlRelayOutputBlock& command,
+           uint16_t index,
+           py::object callback,
+           const opendnp3::TaskConfig& config) {
+            self.SelectAndOperate(command, index, wrap_callback(std::move(callback)), config);
+        },
         py::arg("command"), py::arg("index"), py::arg("callback"), py::arg("config") = opendnp3::TaskConfig::Default()
     );
 
     cls.def(
         "SelectAndOperate",
-        (void (opendnp3::ICommandProcessor::*)(const opendnp3::AnalogOutputInt16 &,
-                                               uint16_t,
-                                               const opendnp3::CommandCallbackT &,
-                                               const opendnp3::TaskConfig &))
-        &opendnp3::ICommandProcessor::SelectAndOperate<opendnp3::AnalogOutputInt16>,
+        [](opendnp3::ICommandProcessor &self,
+           const opendnp3::AnalogOutputInt16& command,
+           uint16_t index,
+           py::object callback,
+           const opendnp3::TaskConfig& config) {
+            self.SelectAndOperate(command, index, wrap_callback(std::move(callback)), config);
+        },
         py::arg("command"), py::arg("index"), py::arg("callback"), py::arg("config") = opendnp3::TaskConfig::Default()
     );
 
     cls.def(
         "SelectAndOperate",
-        (void (opendnp3::ICommandProcessor::*)(const opendnp3::AnalogOutputInt32 &,
-                                               uint16_t,
-                                               const opendnp3::CommandCallbackT &,
-                                               const opendnp3::TaskConfig &))
-        &opendnp3::ICommandProcessor::SelectAndOperate<opendnp3::AnalogOutputInt32>,
+        [](opendnp3::ICommandProcessor &self,
+           const opendnp3::AnalogOutputInt32& command,
+           uint16_t index,
+           py::object callback,
+           const opendnp3::TaskConfig& config) {
+            self.SelectAndOperate(command, index, wrap_callback(std::move(callback)), config);
+        },
         py::arg("command"), py::arg("index"), py::arg("callback"), py::arg("config") = opendnp3::TaskConfig::Default()
     );
 
     cls.def(
         "SelectAndOperate",
-        (void (opendnp3::ICommandProcessor::*)(const opendnp3::AnalogOutputFloat32 &,
-                                               uint16_t,
-                                               const opendnp3::CommandCallbackT &,
-                                               const opendnp3::TaskConfig &))
-        &opendnp3::ICommandProcessor::SelectAndOperate<opendnp3::AnalogOutputFloat32>,
+        [](opendnp3::ICommandProcessor &self,
+           const opendnp3::AnalogOutputFloat32& command,
+           uint16_t index,
+           py::object callback,
+           const opendnp3::TaskConfig& config) {
+            self.SelectAndOperate(command, index, wrap_callback(std::move(callback)), config);
+        },
         py::arg("command"), py::arg("index"), py::arg("callback"), py::arg("config") = opendnp3::TaskConfig::Default()
     );
 
     cls.def(
         "SelectAndOperate",
-        (void (opendnp3::ICommandProcessor::*)(const opendnp3::AnalogOutputDouble64 &,
-                                               uint16_t,
-                                               const opendnp3::CommandCallbackT &,
-                                               const opendnp3::TaskConfig &))
-        &opendnp3::ICommandProcessor::SelectAndOperate<opendnp3::AnalogOutputDouble64>,
+        [](opendnp3::ICommandProcessor &self,
+           const opendnp3::AnalogOutputDouble64& command,
+           uint16_t index,
+           py::object callback,
+           const opendnp3::TaskConfig& config) {
+            self.SelectAndOperate(command, index, wrap_callback(std::move(callback)), config);
+        },
         selectAndOperate_singleCommand,
         py::arg("command"), py::arg("index"), py::arg("callback"), py::arg("config") = opendnp3::TaskConfig::Default()
     );
@@ -176,51 +210,61 @@ void bind_ICommandProcessor(py::module &m)
 
     cls.def(
         "DirectOperate",
-        (void (opendnp3::ICommandProcessor::*)(const opendnp3::ControlRelayOutputBlock &,
-                                               uint16_t,
-                                               const opendnp3::CommandCallbackT &,
-                                               const opendnp3::TaskConfig &))
-        &opendnp3::ICommandProcessor::DirectOperate<opendnp3::ControlRelayOutputBlock>,
+        [](opendnp3::ICommandProcessor &self,
+           const opendnp3::ControlRelayOutputBlock& command,
+           uint16_t index,
+           py::object callback,
+           const opendnp3::TaskConfig& config) {
+            self.DirectOperate(command, index, wrap_callback(std::move(callback)), config);
+        },
         py::arg("command"), py::arg("index"), py::arg("callback"), py::arg("config") = opendnp3::TaskConfig::Default()
     );
 
     cls.def(
         "DirectOperate",
-        (void (opendnp3::ICommandProcessor::*)(const opendnp3::AnalogOutputInt16 &,
-                                               uint16_t,
-                                               const opendnp3::CommandCallbackT &,
-                                               const opendnp3::TaskConfig &))
-        &opendnp3::ICommandProcessor::DirectOperate<opendnp3::AnalogOutputInt16>,
+        [](opendnp3::ICommandProcessor &self,
+           const opendnp3::AnalogOutputInt16& command,
+           uint16_t index,
+           py::object callback,
+           const opendnp3::TaskConfig& config) {
+            self.DirectOperate(command, index, wrap_callback(std::move(callback)), config);
+        },
         py::arg("command"), py::arg("index"), py::arg("callback"), py::arg("config") = opendnp3::TaskConfig::Default()
     );
 
     cls.def(
         "DirectOperate",
-        (void (opendnp3::ICommandProcessor::*)(const opendnp3::AnalogOutputInt32 &,
-                                               uint16_t,
-                                               const opendnp3::CommandCallbackT &,
-                                               const opendnp3::TaskConfig &))
-        &opendnp3::ICommandProcessor::DirectOperate<opendnp3::AnalogOutputInt32>,
+        [](opendnp3::ICommandProcessor &self,
+           const opendnp3::AnalogOutputInt32& command,
+           uint16_t index,
+           py::object callback,
+           const opendnp3::TaskConfig& config) {
+            self.DirectOperate(command, index, wrap_callback(std::move(callback)), config);
+        },
         py::arg("command"), py::arg("index"), py::arg("callback"), py::arg("config") = opendnp3::TaskConfig::Default()
     );
 
     cls.def(
         "DirectOperate",
-        (void (opendnp3::ICommandProcessor::*)(const opendnp3::AnalogOutputFloat32 &,
-                                               uint16_t,
-                                               const opendnp3::CommandCallbackT &,
-                                               const opendnp3::TaskConfig &))
-        &opendnp3::ICommandProcessor::DirectOperate<opendnp3::AnalogOutputFloat32>,
+        [](opendnp3::ICommandProcessor &self,
+           const opendnp3::AnalogOutputFloat32& command,
+           uint16_t index,
+           py::object callback,
+           const opendnp3::TaskConfig& config) {
+            self.DirectOperate(command, index, wrap_callback(std::move(callback)), config);
+        },
         py::arg("command"), py::arg("index"), py::arg("callback"), py::arg("config") = opendnp3::TaskConfig::Default()
     );
 
     cls.def(
         "DirectOperate",
-        (void (opendnp3::ICommandProcessor::*)(const opendnp3::AnalogOutputDouble64 &,
-                                               uint16_t,
-                                               const opendnp3::CommandCallbackT &,
-                                               const opendnp3::TaskConfig &))
-        &opendnp3::ICommandProcessor::DirectOperate<opendnp3::AnalogOutputDouble64>,
+        [](opendnp3::ICommandProcessor &self,
+           const opendnp3::AnalogOutputDouble64& command,
+           uint16_t index,
+           py::object callback,
+           const opendnp3::TaskConfig& config) {
+            self.DirectOperate(command, index, wrap_callback(std::move(callback)), config);
+        },
         directOperate_singleCommand,
         py::arg("command"), py::arg("index"), py::arg("callback"), py::arg("config") = opendnp3::TaskConfig::Default()
     );
@@ -235,9 +279,9 @@ void bind_ICommandProcessor(py::module &m)
         "SelectAndOperate",
         [](opendnp3::ICommandProcessor &self,
            opendnp3::CommandSet& commands,
-           const opendnp3::CommandCallbackT& callback,
+           py::object callback,
            const opendnp3::TaskConfig& config) -> void {
-            return self.SelectAndOperate(std::move(commands), callback, config);
+            return self.SelectAndOperate(std::move(commands), wrap_callback(std::move(callback)), config);
         },
         selectAndOperate_commandSet,
         py::arg("commands"), py::arg("callback"), py::arg("config") = opendnp3::TaskConfig::Default()
@@ -253,41 +297,16 @@ void bind_ICommandProcessor(py::module &m)
         "DirectOperate",
         [](opendnp3::ICommandProcessor &self,
            opendnp3::CommandSet& commands,
-           const opendnp3::CommandCallbackT& callback,
+           py::object callback,
            const opendnp3::TaskConfig& config) -> void {
-            return self.DirectOperate(std::move(commands), callback, config);
+            return self.DirectOperate(std::move(commands), wrap_callback(std::move(callback)), config);
         },
         directOperate_commandSet,
         py::arg("commands"), py::arg("callback"), py::arg("config") = opendnp3::TaskConfig::Default()
     );
 }
 
-// @todo This code is a work-around for pybind11 issue related to 'const ref' arguments. However,
-// it is seg faulting on the callback.  For now, the workaround is to reply on the pybind11 patch
-// that ignores the copy constructor/non-copyable error and seems to work without issue.
-//
-//    cls.def(
-//            "DirectOperate",
-//            [](opendnp3::ICommandProcessor &self,
-//               opendnp3::CommandSet& commands,
-//               py::function callback,
-//               const opendnp3::TaskConfig& config) {
-//                return self.DirectOperate(
-//                    std::move(commands),
-//                    [callback](const opendnp3::ICommandTaskResult& result) -> void {
-//                        std::cout << "In lambda callback" << std::endl ;
-//                        auto py_result = py::cast(result, py::return_value_policy::reference);
-//                        callback(py_result);
-//                    },
-//                    config
-//                );
-//            },
-//            directOperate_commandSet,
-//            py::call_guard<py::gil_scoped_release>(),
-//            py::arg("commands"), py::arg("callback"), py::arg("config") = opendnp3::TaskConfig::Default(),
-//            py::return_value_policy::reference
-//        );
-//}
+
 
 #endif // PYDNP3_OPENDNP3
 #endif
