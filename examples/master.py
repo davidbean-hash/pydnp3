@@ -4,6 +4,7 @@ import time
 
 from pydnp3 import opendnp3, openpal, asiopal, asiodnp3
 from visitors import *
+from json_visitor import JSONSOEHandler
 
 FILTERS = opendnp3.levels.NORMAL | opendnp3.levels.ALL_COMMS
 HOST = "127.0.0.1"
@@ -273,7 +274,15 @@ def restart_callback(result=opendnp3.RestartOperationResult()):
 
 def main():
     """The Master has been started from the command line. Execute ad-hoc tests if desired."""
+    # To use the default SOEHandler (logs to console):
     # app = MyMaster()
+
+    # To use the JSON SOE Handler (outputs measurement data as JSON to stdout):
+    # soe_handler = JSONSOEHandler()
+
+    # To use the JSON SOE Handler with file output:
+    # soe_handler = JSONSOEHandler(output_file='measurements.json')
+
     app = MyMaster(log_handler=MyLogger(),
                    listener=AppChannelListener(),
                    soe_handler=SOEHandler(),
