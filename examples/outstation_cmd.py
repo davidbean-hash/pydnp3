@@ -47,6 +47,15 @@ class OutstationCmd(cmd.Cmd):
         """Send the Master an AnalogInput (group 32) value of 2 at index 4. Command syntax is: a2"""
         self.application.apply_update(opendnp3.Analog(2), index=4)
 
+    def do_af(self, line):
+        """Send the Master an AnalogInput float value. Command syntax is: af index value"""
+        index, value_string = self.index_and_value_from_line(line)
+        if index and value_string:
+            try:
+                self.application.apply_update(opendnp3.Analog(float(value_string)), index)
+            except ValueError:
+                print('Please enter a floating-point value as the second argument.')
+
     def do_b(self, line):
         """Send the Master a BinaryInput (group 2) value. Command syntax is: 'b index true' or 'b index false'"""
         index, value_string = self.index_and_value_from_line(line)
@@ -79,6 +88,7 @@ class OutstationCmd(cmd.Cmd):
         """Display a menu of command-line options. Command syntax is: menu"""
         print('\ta\t\tAnalog measurement.\tEnter index and value as arguments.')
         print('\ta2\t\tAnalog 2 for MMDC.Vol (index 4).')
+        print('\taf\t\tAnalog float measurement.\tEnter index and value as arguments.')
         print('\tb\t\tBinary measurement.\tEnter index and value as arguments.')
         print('\tb0\t\tBinary False for MMDC1.Amp.range (index 6).')
         print('\tc\t\tCounter measurement.\tEnter index and value as arguments.')
